@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dripzone — Streetwear</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#090909;color:#fff}
+button,input,select{font:inherit}button{cursor:pointer}
+header{height:72px;background:#0d0d0d;border-bottom:1px solid #252525;display:flex;align-items:center;padding:0 5%;gap:30px;position:sticky;top:0;z-index:10}
+.logo{font-size:28px;font-weight:900;font-style:italic;letter-spacing:-2px}.logo span{color:#8b35ff}
+nav{display:flex;gap:22px;margin-left:auto}nav a{color:#ddd;text-decoration:none;font-size:14px}
+.cart{background:#8b35ff;border:0;color:white;padding:10px 16px;border-radius:8px}
+.hero{min-height:440px;padding:70px 7%;display:flex;align-items:center;background:radial-gradient(circle at 75% 50%,#4b1680 0,#170c20 25%,#090909 62%)}
+.hero h1{font-size:clamp(48px,8vw,100px);line-height:.88;margin:10px 0}.hero h1 span{color:#8b35ff}.hero p{color:#bbb;font-size:18px;max-width:520px}
+.btn{background:#8b35ff;border:0;color:white;padding:14px 22px;border-radius:7px;font-weight:bold}.btn.alt{background:transparent;border:1px solid #555;margin-left:8px}
+section{padding:55px 6%}.title{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.title h2{font-size:30px;margin:0}
+.categories,.products{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.category{padding:28px 15px;background:#151515;border:1px solid #292929;border-radius:10px;text-align:center;font-weight:bold}
+.products{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.card{background:#f1f1f1;color:#111;border-radius:10px;overflow:hidden;position:relative}.card img{width:100%;height:235px;object-fit:cover;background:#ddd}.card-body{padding:15px}.card h3{margin:0 0 7px}.price{font-weight:bold;font-size:18px}.sizes{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}.size{border:1px solid #bbb;padding:5px 8px;border-radius:5px;background:white;font-size:12px}.stock{font-size:12px;margin-top:9px;color:#16823b}.out{color:#d21f3c}
+.admin{display:none;background:#f5f6f8;color:#151515;min-height:100vh;padding:35px 5%}.admin.show{display:block}.shop.hide{display:none}
+.admin-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.admin-grid{display:grid;grid-template-columns:1fr 360px;gap:20px}.panel{background:white;border:1px solid #ddd;border-radius:12px;padding:20px}.product-row{display:grid;grid-template-columns:60px 1fr 100px 130px 80px;gap:12px;align-items:center;border-bottom:1px solid #eee;padding:12px 0}.product-row img{width:60px;height:60px;object-fit:cover;border-radius:7px}.badge{padding:5px 8px;border-radius:20px;font-size:12px;background:#dcfce7;color:#166534}.badge.red{background:#fee2e2;color:#991b1b}.field{margin-bottom:13px}.field label{display:block;font-size:13px;font-weight:bold;margin-bottom:5px}.field input,.field select{width:100%;padding:11px;border:1px solid #ccc;border-radius:7px}.field input[type=file]{background:#fafafa;padding:12px}.stock-editor{display:grid;grid-template-columns:1fr 80px;gap:8px;margin-bottom:8px}.danger{background:#fee2e2;color:#991b1b;border:0;padding:8px;border-radius:6px}.small{background:#eee;border:0;padding:9px 12px;border-radius:6px}.footer{text-align:center;color:#777;padding:35px}
+@media(max-width:800px){nav{display:none}.categories{grid-template-columns:repeat(2,1fr)}.admin-grid{grid-template-columns:1fr}.product-row{grid-template-columns:50px 1fr 70px}.product-row>*:nth-child(4),.product-row>*:nth-child(5){display:none}}
+</style>
+</head>
+<body>
+
+<div id="shop" class="shop">
+<header>
+  <div class="logo">DRIP<span>ZONE</span></div>
+  <nav><a href="#shop">Accueil</a><a href="#boutique">Boutique</a><a href="#nouveautes">Nouveautés</a><a href="#categories">Collections</a></nav>
+  <button class="cart" onclick="openAdmin()">⚙ Gérer la boutique</button>
+</header>
+
+<div class="hero">
+  <div>
+    <div style="color:#a85cff;font-weight:bold;letter-spacing:4px">DRIPZONE</div>
+    <h1>TON STYLE.<br><span>TA ZONE.</span></h1>
+    <p>Chaussures, vêtements, survêtements et accessoires streetwear pour créer ton propre drip.</p>
+    <a href="#boutique"><button class="btn">DÉCOUVRIR</button></a>
+    <a href="#nouveautes"><button class="btn alt">NOUVEAUTÉS</button></a>
+  </div>
+</div>
+
+<section id="categories">
+  <div class="title"><h2>Catégories</h2></div>
+  <div class="categories">
+    <div class="category">👟<br>Chaussures</div><div class="category">👕<br>Vêtements</div>
+    <div class="category">🧥<br>Survêtements</div><div class="category">🎽<br>T-Shirts</div>
+    <div class="category">🧢<br>Casquettes</div><div class="category">🕶️<br>Lunettes</div>
+  </div>
+</section>
+
+<section id="boutique">
+  <div class="title"><h2>Nouveautés</h2></div>
+  <div id="productGrid" class="products"></div>
+</section>
+<div class="footer">© 2026 Dripzone — Ton style. Ta zone.</div>
+</div>
+
+<div id="admin" class="admin">
+  <div class="admin-head">
+    <div><h1 style="margin:0">Dripzone 👑</h1><p>Gestion de ta boutique</p></div>
+    <button class="small" onclick="closeAdmin()">← Voir ma boutique</button>
+  </div>
+  <div class="admin-grid">
+    <div class="panel">
+      <h2>Produits</h2>
+      <div id="adminProducts"></div>
+    </div>
+    <div class="panel">
+      <h2 id="formTitle">Ajouter un produit</h2>
+      <input type="hidden" id="editId">
+      <div class="field"><label>Nom</label><input id="name" placeholder="Ex : Hoodie Dripzone"></div>
+      <div class="field"><label>Catégorie</label><select id="category"><option>Chaussures</option><option>Vêtements</option><option>Survêtements</option><option>T-Shirts</option><option>Casquettes</option><option>Lunettes</option></select></div>
+      <div class="field"><label>Prix (€)</label><input id="price" type="number" step=".01"></div>
+      <div class="field">
+  <label>Photo du produit</label>
+  <input id="imageFile" type="file" accept="image/*" onchange="handleImageUpload(event)">
+  <div id="imagePreview" style="margin-top:10px;display:none">
+    <img id="previewImg" style="width:100%;max-height:220px;object-fit:contain;border:1px solid #ddd;border-radius:8px;background:#f5f5f5">
+  </div>
+  <input id="image" type="hidden">
+  <small style="color:#777;display:block;margin-top:6px">Choisis une image directement depuis ton PC.</small>
+</div>
+      <div class="field"><label>Tailles et stock</label><div id="stockFields"></div><button class="small" onclick="addSize()">+ Ajouter une taille</button></div>
+      <button class="btn" style="width:100%" onclick="saveProduct()">Enregistrer le produit</button>
+      <button class="small" style="width:100%;margin-top:8px" onclick="resetForm()">Nouveau produit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const defaultProducts=[
+{id:1,name:"Jordan 1 Retro Purple",category:"Chaussures",price:129.99,image:"https://images.unsplash.com/photo-1552346154-21d32810aba3?w=700",sizes:{38:3,39:5,40:0,41:2,42:1}},
+{id:2,name:"Hoodie Dripzone",category:"Vêtements",price:49.99,image:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=700",sizes:{S:3,M:5,L:2,XL:2}},
+{id:3,name:"Ensemble Dripzone",category:"Survêtements",price:89.99,image:"https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=700",sizes:{S:1,M:2,L:1,XL:1}},
+{id:4,name:"T-Shirt Dripzone",category:"T-Shirts",price:29.99,image:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=700",sizes:{S:0,M:0,L:0,XL:0}},
+{id:5,name:"Casquette Dripzone",category:"Casquettes",price:24.99,image:"https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=700",sizes:{Unique:15}},
+{id:6,name:"Lunettes Dripzone",category:"Lunettes",price:19.99,image:"https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=700",sizes:{Unique:7}}
+];
+let products=JSON.parse(localStorage.getItem("dripzone_products")||"null")||defaultProducts;
+let stockSizes={};
+
+function saveData(){localStorage.setItem("dripzone_products",JSON.stringify(products))}
+function totalStock(p){return Object.values(p.sizes).reduce((a,b)=>a+Number(b),0)}
+function renderShop(){
+ const grid=document.getElementById("productGrid");
+ grid.innerHTML=products.map(p=>`<div class="card">
+ <img src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/700x500?text=Dripzone'">
+ <div class="card-body"><h3>${p.name}</h3><div class="price">${p.price.toFixed(2)} €</div>
+ <div class="sizes">${Object.entries(p.sizes).map(([s,n])=>`<span class="size">${s} ${n>0?'':'—'}</span>`).join("")}</div>
+ <div class="${totalStock(p)===0?'stock out':'stock'}">${totalStock(p)===0?'Rupture de stock':totalStock(p)<=3?'⚠ Plus que '+totalStock(p):'✓ En stock'}</div></div></div>`).join("");
+}
+function renderAdmin(){
+ document.getElementById("adminProducts").innerHTML=products.map(p=>`<div class="product-row">
+ <img src="${p.image}"><div><b>${p.name}</b><br><small>${p.category}</small></div><b>${p.price.toFixed(2)} €</b>
+ <span class="badge ${totalStock(p)===0?'red':''}">${totalStock(p)===0?'Rupture':totalStock(p)}</span>
+ <button class="small" onclick="editProduct(${p.id})">✎</button></div>`).join("");
+}
+function openAdmin(){document.getElementById("shop").classList.add("hide");document.getElementById("admin").classList.add("show");renderAdmin()}
+function closeAdmin(){document.getElementById("admin").classList.remove("show");document.getElementById("shop").classList.remove("hide");renderShop()}
+function addSize(){stockSizes["Nouvelle taille"]=stockSizes["Nouvelle taille"]??0;renderStockFields()}
+function renderStockFields(){document.getElementById("stockFields").innerHTML=Object.entries(stockSizes).map(([s,n],i)=>`<div class="stock-editor"><input value="${s}" onchange="renameSize(${i},this.value)"><input type="number" min="0" value="${n}" onchange="stockSizes[Object.keys(stockSizes)[${i}]]=Number(this.value)"></div>`).join("")}
+function renameSize(i,v){const keys=Object.keys(stockSizes),old=keys[i],val=stockSizes[old];delete stockSizes[old];stockSizes[v]=val}
+function editProduct(id){
+ const p=products.find(x=>x.id===id);document.getElementById("editId").value=id;document.getElementById("formTitle").textContent="Modifier le produit";
+ document.getElementById("name").value=p.name;document.getElementById("category").value=p.category;document.getElementById("price").value=p.price;document.getElementById("image").value=p.image;
+ document.getElementById("imageFile").value=""; showImagePreview(p.image);
+ stockSizes={...p.sizes};renderStockFields();window.scrollTo({top:0,behavior:"smooth"});
+}
+function resetForm(){document.getElementById("editId").value="";document.getElementById("formTitle").textContent="Ajouter un produit";["name","price","image"].forEach(x=>document.getElementById(x).value="");document.getElementById("imageFile").value="";showImagePreview("");stockSizes={S:0,M:0,L:0,XL:0};renderStockFields()}
+function handleImageUpload(event){
+ const file = event.target.files && event.target.files[0];
+ if(!file) return;
+ if(!file.type.startsWith("image/")) return alert("Choisis une image (JPG, PNG, WEBP, etc.).");
+ if(file.size > 5 * 1024 * 1024) return alert("Image trop lourde. Choisis une image de moins de 5 Mo.");
+ const reader = new FileReader();
+ reader.onload = function(e){
+   document.getElementById("image").value = e.target.result;
+   document.getElementById("previewImg").src = e.target.result;
+   document.getElementById("imagePreview").style.display = "block";
+ };
+ reader.readAsDataURL(file);
+}
+function showImagePreview(src){
+ const box=document.getElementById("imagePreview");
+ const img=document.getElementById("previewImg");
+ if(src){ img.src=src; box.style.display="block"; }
+ else { img.removeAttribute("src"); box.style.display="none"; }
+}
+
+function saveProduct(){
+ const id=document.getElementById("editId").value,name=document.getElementById("name").value.trim(),category=document.getElementById("category").value,price=Number(document.getElementById("price").value),image=document.getElementById("image").value.trim()||"https://via.placeholder.com/700x500?text=Dripzone";
+ if(!name||!price)return alert("Ajoute au minimum un nom et un prix.");
+ const data={id:id?Number(id):Date.now(),name,category,price,image,sizes:{...stockSizes}};
+ if(id)products=products.map(p=>p.id===Number(id)?data:p);else products.unshift(data);
+ saveData();renderAdmin();renderShop();resetForm();alert("Produit enregistré !");
+}
+stockSizes={S:0,M:0,L:0,XL:0};renderStockFields();renderShop();
+</script>
+</body>
+</html>
